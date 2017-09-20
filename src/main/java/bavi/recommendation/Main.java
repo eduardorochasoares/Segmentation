@@ -33,7 +33,7 @@ public class Main {
                     fr = new FileReader("/home/eduardo/Documentos/sceneSegmentation/anotation" + i + ".txt");
                     new BufferedReader(fr);
                     br = new BufferedReader(new FileReader("/home/eduardo/Documentos/sceneSegmentation/anotation" + i+".txt"));
-                    Video v = new Video("chunk" + i + " " + (i + 1));
+                    Video v = new Video(Integer.toString(i));
 
                     while((s = br.readLine()) != null) {
                         msg.add(s);

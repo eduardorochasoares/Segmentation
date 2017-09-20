@@ -6,11 +6,13 @@
 package bavi.recommendation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Scene {
     private int index;
     private ArrayList<Integer> chunks = new ArrayList();
-    private ArrayList<String> categories = new ArrayList();
+    private Set<String> categories = new HashSet<String>();
 
     public Scene() {
     }
@@ -23,11 +25,11 @@ public class Scene {
         this.chunks = chunks;
     }
 
-    public ArrayList<String> getCategories() {
-        return this.categories;
+    public Set<String> getCategories() {
+        return categories;
     }
 
-    public void setCategories(ArrayList<String> categories) {
+    public void setCategories(Set<String> categories) {
         this.categories = categories;
     }
 

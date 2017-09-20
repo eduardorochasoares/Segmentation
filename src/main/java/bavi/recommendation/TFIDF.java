@@ -11,10 +11,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class TFIDF {
-    private ArrayList<ArrayList<Double>> tfidf = new ArrayList();
-    private ArrayList<String> terms = new ArrayList();
-    private ArrayList<Video> videos = new ArrayList();
-    private ArrayList<Scene> scenes = new ArrayList();
+    private ArrayList<ArrayList<Double>> tfidf = new ArrayList<>();
+    private ArrayList<String> terms = new ArrayList<>();
+    private ArrayList<Video> videos = new ArrayList<>();
+    private ArrayList<Scene> scenes = new ArrayList<>();
     private double[][] sim;
 
     public TFIDF() {
@@ -40,7 +40,7 @@ public class TFIDF {
         int i;
         for(i = 0; i < this.terms.size(); ++i) {
             int ni = this.countOccurrences((String)this.terms.get(i));
-            ArrayList<Double> auxList = new ArrayList();
+            ArrayList<Double> auxList = new ArrayList<>();
 
             for(int j = 0; j < this.videos.size(); ++j) {
                 int fij = this.countFrequency((String)this.terms.get(i), (Video)this.videos.get(j));
@@ -65,19 +65,18 @@ public class TFIDF {
 
         this.makeScenes();
 
+
         for(i = 0; i < this.scenes.size(); ++i) {
             System.out.print("Cena nº " + i + ": ");
 
             for(j = 0; j < ((Scene)this.scenes.get(i)).getChunks().size(); ++j) {
-                String[] a = ((Video)this.videos.get(((Integer)((Scene)this.scenes.get(i)).getChunks().get(j)).intValue())).getId().split("chunk");
-                System.out.print(a[1] + " ");
+                System.out.print(this.videos.get(this.scenes.get(i).getChunks().get(j)).getId() + " ");
+
             }
 
-            System.out.print("Categories: ");
-            Iterator var7 = ((Scene)this.scenes.get(i)).getCategories().iterator();
+            System.out.print(" Categories: ");
 
-            while(var7.hasNext()) {
-                String s = (String)var7.next();
+            for (String s : ((Scene) this.scenes.get(i)).getCategories()) {
                 System.out.print(s + " ");
             }
 
@@ -88,10 +87,10 @@ public class TFIDF {
 
     private int countOccurrences(String term) {
         int num = 0;
-        Iterator var3 = this.videos.iterator();
+        Iterator<Video> var3 = this.videos.iterator();
 
         while(var3.hasNext()) {
-            Video v = (Video)var3.next();
+            Video v = var3.next();
             if (v.getCategories() != null && v.getCategories().contains(term)) {
                 ++num;
             }
@@ -106,13 +105,13 @@ public class TFIDF {
 
     private int countFrequency(String term, Video v) {
         int num = 0;
-        Iterator var4;
+        Iterator<String> var4;
         String s;
         if (v.getCategories() != null) {
             var4 = v.getCategories().iterator();
 
             while(var4.hasNext()) {
-                s = (String)var4.next();
+                s = var4.next();
                 if (s.equals(term)) {
                     ++num;
                 }
@@ -122,7 +121,7 @@ public class TFIDF {
         var4 = v.getReferences().iterator();
 
         while(var4.hasNext()) {
-            s = (String)var4.next();
+            s = var4.next();
             if (s.equals(term)) {
                 ++num;
             }
@@ -140,8 +139,8 @@ public class TFIDF {
     }
 
     public double similarity(int v1, int v2) {
-        ArrayList<Double> vectorA = new ArrayList();
-        ArrayList<Double> vectorB = new ArrayList();
+        ArrayList<Double> vectorA = new ArrayList<>();
+        ArrayList<Double> vectorB = new ArrayList<>();
 
         for(int i = 0; i < this.terms.size(); ++i) {
             vectorA.add((Double) ((ArrayList)this.tfidf.get(i)).get(v1));
@@ -170,7 +169,7 @@ public class TFIDF {
         Scene s = new Scene();
         this.scenes.add(s);
         s.getChunks().add(current);
-        s.setCategories(this.union(((Video)this.videos.get(current)).getCategories(), ((Video)this.videos.get(current)).getReferences()));
+        s.getCategories().addAll(this.union(((Video)this.videos.get(current)).getCategories(), ((Video)this.videos.get(current)).getReferences()));
 
         while(true) {
             do {
@@ -180,15 +179,18 @@ public class TFIDF {
 
                 similar = false;
                 ++current;
-                Iterator var5 = s.getChunks().iterator();
+                Iterator<Integer> var5 = s.getChunks().iterator();
 
                 while(var5.hasNext()) {
-                    int a = ((Integer)var5.next()).intValue();
+                    int a = (var5.next()).intValue();
                     if (this.sim[current][a] > 0.8) {
+
                         s.getChunks().add(current);
                         similar = true;
-                        ArrayList<String> aux = this.union(((Video)this.videos.get(current)).getCategories(), ((Video)this.videos.get(current)).getReferences());
-                        s.setCategories(aux);
+                        s.getCategories().addAll(union(this.videos.get(current).getCategories(),
+                                this.videos.get(current).getReferences()));
+                        //ArrayList<String> aux = this.union(((Video)this.videos.get(current)).getCategories(), ((Video)this.videos.get(current)).getReferences());
+                        //s.setCategories(aux);
                         break;
                     }
                 }
@@ -197,20 +199,18 @@ public class TFIDF {
             s = new Scene();
             this.scenes.add(s);
             s.getChunks().add(current);
-            if (((Video)this.videos.get(current)).getCategories().isEmpty() || ((Video)this.videos.get(current)).getReferences().isEmpty()) {
-                //System.out.println("aaaa");
-            }
 
-            s.setCategories(this.union(((Video)this.videos.get(current)).getCategories(), ((Video)this.videos.get(current)).getReferences()));
+            s.getCategories().addAll(union(this.videos.get(current).getCategories(),
+                    this.videos.get(current).getReferences()));
         }
     }
 
     public <T> ArrayList<T> intersection(ArrayList<T> list1, ArrayList<T> list2) {
-        ArrayList<T> list = new ArrayList();
-        Iterator var4 = list1.iterator();
+        ArrayList<T> list = new ArrayList<>();
+        Iterator<T> var4 = list1.iterator();
 
         while(var4.hasNext()) {
-            T t = (T) var4.next();
+            T t = var4.next();
             if (list2.contains(t)) {
                 list.add(t);
             }
@@ -219,8 +219,8 @@ public class TFIDF {
         return list;
     }
 
-    public <T> ArrayList<T> union(ArrayList<T> list1, ArrayList<T> list2) {
-        Set<T> set = new HashSet();
+    public <T> ArrayList union(ArrayList<T> list1, ArrayList<T> list2) {
+        Set<T> set = new HashSet<>();
         set.addAll(list1);
         set.addAll(list2);
         return new ArrayList(set);
