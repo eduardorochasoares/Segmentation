@@ -15,6 +15,7 @@ public class TFIDF {
     private ArrayList<String> terms = new ArrayList<>();
     private ArrayList<Video> videos = new ArrayList<>();
     private ArrayList<Scene> scenes = new ArrayList<>();
+    private ArrayList<Double> custo = new ArrayList<>();
     private double[][] sim;
 
     public TFIDF() {
@@ -53,7 +54,9 @@ public class TFIDF {
 
             this.tfidf.add(auxList);
         }
-
+        
+        inicializaVet(tfidf.size());
+        
         this.sim = new double[this.videos.size()][this.videos.size()];
 
         int j;
@@ -138,7 +141,24 @@ public class TFIDF {
         this.videos = videos;
     }
 
-    public double similarity(int v1, int v2) {
+    public double similarityCenas(ArrayList<Double> vectorA, ArrayList<Double> vectorB) {
+        
+        double sum = 0.0D;
+        double normA = 0.0D;
+        double normB = 0.0D;
+
+        for(int i = 0; i < vectorA.size(); ++i) {
+            sum += ((Double)vectorA.get(i)).doubleValue() * ((Double)vectorB.get(i)).doubleValue();
+            normA += ((Double)vectorA.get(i)).doubleValue() * ((Double)vectorA.get(i)).doubleValue();
+            normB += ((Double)vectorB.get(i)).doubleValue() * ((Double)vectorB.get(i)).doubleValue();
+        }
+
+        normA = Math.sqrt(normA);
+        normB = Math.sqrt(normB);
+        double s = sum / (normA * normB);
+        return s;
+    }
+     public double similarity(int v1, int v2) {
         ArrayList<Double> vectorA = new ArrayList<>();
         ArrayList<Double> vectorB = new ArrayList<>();
 
@@ -164,7 +184,7 @@ public class TFIDF {
     }
 
     public void makeScenes() {
-        int current = 0;
+        /*int current = 0;
         boolean similar = false;
         Scene s = new Scene();
         this.scenes.add(s);
@@ -202,7 +222,11 @@ public class TFIDF {
 
             s.getCategories().addAll(union(this.videos.get(current).getCategories(),
                     this.videos.get(current).getReferences()));
-        }
+        }*/
+        //System.out.println("chama SSD");
+        //SSD(0,tfidf.get(0).size()-1,0);
+        AG ag = new AG(tfidf, this);
+        ag.Main();
     }
 
     public <T> ArrayList<T> intersection(ArrayList<T> list1, ArrayList<T> list2) {
@@ -224,5 +248,80 @@ public class TFIDF {
         set.addAll(list1);
         set.addAll(list2);
         return new ArrayList(set);
+    }
+    
+    public double desvioQuad(int inicio, int fim){
+        //System.out.println("inicio desvioQuad");
+        double mediaTermo;
+        double soma = 0;
+        double desvio = 0;
+        for(int i = 0; i < tfidf.size(); i++){
+            mediaTermo = MediaTermo(i,inicio,fim);
+            for(int j = inicio; j < fim; j++ ){
+                desvio += Math.pow(tfidf.get(i).get(j) - mediaTermo,2);
+            }
+            soma += desvio;
+        }
+        //System.out.println("Soma " + soma);
+        return soma;
+    }
+    
+    public double MediaTermo(int termo, int inicio, int fim){
+        //System.out.println("inicio MediaTermo");
+        double media = 0;
+        for(int i = inicio; i <= fim; i++){ 
+            media += tfidf.get(termo).get(i);
+        }
+        media = (media/((fim - inicio) + 1));
+        //System.out.println("media" + media);
+        return media;
+    }
+    
+    public void SSD(int inicio, int fim, int cont){
+        if((fim - inicio) <= 0 ){
+            return;
+        }
+        //System.out .println("inicio " + inicio + " fim " + fim);
+        //System.out.println("cont " + cont);
+        if(cont > 3){
+            return;
+        }
+        //System.out.println("inicio SSD");
+        double somaT = desvioQuad(inicio,fim);
+        //System.out.println("soma total " + somaT);
+        double somaLa = 0;
+        double somaLb = 0;
+        for (int i = inicio; i <= fim; i++){
+            somaLa = desvioQuad(inicio,i-1);
+            somaLb = desvioQuad(i+1, fim);
+            //System.out.println("custo " + (somaT - (somaLa - somaLb)));
+            //System.out.println("soma esquerda " + somaLa);
+            //System.out.println("soma direita " + somaLb);
+            //System.out.println(" ");
+            custo.set(i , somaT - (somaLa + somaLb));
+        }
+        //System.out.println("tamanho do vetor de custo " + custo.size());
+        //System.out.println("Calcula aresta de corte");
+        double maior = Double.NEGATIVE_INFINITY;
+        int indexMaior = -1;
+        for(int i = inicio; i < fim; i++){
+            if(custo.get(i) > maior){
+                maior = custo.get(i);
+                indexMaior = i;
+                //System.out.println("indice do maior custo " + indexMaior);
+            }
+        }
+        System.out.println("Similaridade: " + similarity(indexMaior, indexMaior+1));
+        if(similarity(indexMaior, indexMaior+1) < 0.75){
+            System.out.println("(" + indexMaior + ", " + (indexMaior+1) + " )" + "Aresta de corte");
+        }
+        SSD(inicio, indexMaior , cont+1);
+        SSD(indexMaior+1, fim, cont+1);
+    }
+    
+    private void inicializaVet(int tam){
+        for(int i = 0; i < tam; i++){
+            custo.add(Double.NEGATIVE_INFINITY);
+        }
     }
 }

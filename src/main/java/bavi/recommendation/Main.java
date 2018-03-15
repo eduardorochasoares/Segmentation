@@ -24,15 +24,15 @@ public class Main {
 
         String s;
         try {
-            for(int i = 0; i < 455; ++i) {
+            for(int i = 0; i < 174; ++i) {
                 BufferedReader br = null;
                 FileReader fr = null;
                 ArrayList msg = new ArrayList();
 
                 try {
-                    fr = new FileReader("/home/eduardo/Documentos/sceneSegmentation/anotation" + i + ".txt");
+                    fr = new FileReader("/home/eduardo/Documentos/sceneSegmentation/VideoInfo Extraction/anotation" + i + ".txt");
                     new BufferedReader(fr);
-                    br = new BufferedReader(new FileReader("/home/eduardo/Documentos/sceneSegmentation/anotation" + i+".txt"));
+                br = new BufferedReader(new FileReader("/home/eduardo/Documentos/sceneSegmentation/VideoInfo Extraction/anotation" + i + ".txt"));
                     Video v = new Video(Integer.toString(i));
 
                     while((s = br.readLine()) != null) {
@@ -40,8 +40,8 @@ public class Main {
                     }
 
                     v.setReferences(msg);
-                    DBPedia db = new DBPedia();
-                    db.getResourcesRelatedAndRelatedTo(v);
+                    //DBPedia db = new DBPedia();
+                    //db.getResourcesRelatedAndRelatedTo(v);
                     videos.add(v);
                 } catch (IOException var8) {
 
