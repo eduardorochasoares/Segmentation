@@ -32,7 +32,7 @@ public class AG {
     private ArrayList<ArrayList<Double>> tf;
     private ArrayList<ArrayList<Integer>> ag = new ArrayList();
     private TFIDF tfidf;
-    private static double alfa = 0.8;
+    private static double alfa = 0.6;
 
     public AG(ArrayList<ArrayList<Double>> tf, TFIDF tfidf) {
         this.tf = tf;
@@ -214,7 +214,7 @@ public class AG {
         System.out.println("0");
         InicalizaVetor();
         int k = 0;
-        while (k < 500 && iterations_without_improviment < 50) {
+        while (k < 500 && iterations_without_improviment < 100) {
             System.out.println("1");
             int x = (int) (population * 0.2) - 1;
             ag = ordena();
