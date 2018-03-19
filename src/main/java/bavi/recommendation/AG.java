@@ -32,6 +32,7 @@ public class AG {
     private ArrayList<ArrayList<Double>> tf;
     private ArrayList<ArrayList<Integer>> ag = new ArrayList();
     private TFIDF tfidf;
+    private static double alfa = 0.8;
 
     public AG(ArrayList<ArrayList<Double>> tf, TFIDF tfidf) {
         this.tf = tf;
@@ -151,7 +152,7 @@ public class AG {
     public double AvaliaS(ArrayList<Integer> vet) {
         Avalia av = new Avalia(tfidf);
 
-           return (av.sumSimilaridadeInterCenas(vet)) + (1/av.sumSimilaridadeIntraCenas(vet));
+           return (alfa* av.sumSimilaridadeInterCenas(vet)) + (1-alfa)*(1/av.sumSimilaridadeIntraCenas(vet));
 
     }
 
@@ -208,25 +209,25 @@ public class AG {
     }
 
     public void Main() {
-        double bestSolution = 0;
+        double bestSolution = Double.MAX_VALUE;
         int iterations_without_improviment = 0;
         System.out.println("0");
         InicalizaVetor();
         int k = 0;
-        while (k < 100 || iterations_without_improviment < 10) {
+        while (k < 500 && iterations_without_improviment < 50) {
             System.out.println("1");
-            int x = (int) (population * 0.1) - 1;
+            int x = (int) (population * 0.2) - 1;
             ag = ordena();
             System.out.println("2");
             double valorSolucao = AvaliaS(ag.get(0));
             System.out.println(valorSolucao);
-            if(valorSolucao > bestSolution){
+            if(valorSolucao < bestSolution){
                 bestSolution = valorSolucao;
                 iterations_without_improviment = 0;
             }else{
                 iterations_without_improviment++;
             }
-            Mutacao(x, 0.05);
+            Mutacao(x, 0.1);
             System.out.println("iteração: " + k);
             CrossOver(x, ((int) ((population - x) * 0.05) + x));
             System.out.println("3");

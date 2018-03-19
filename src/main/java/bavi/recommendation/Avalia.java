@@ -25,15 +25,16 @@ public class Avalia {
         double mediaC = 0;
         int i = 0;
         int j = 1;
+        double similarity[][] = tf.getSimilarityTable();
         while(j < vet.size()-1){
             while(vet.get(j+1) != 1){
                 i++;
                 if(vet.get(j) == 1){
                     break;
                 }else if(vet.get(j) == 0 && vet.get(j+1) == 1){
-                    media += tf.similarity(j-1, j);
+                    media += similarity[j-1][j];
                 }else if(vet.get(j) == 0 && vet.get(j+1) == 0){
-                    media += tf.similarity(j-1, j) + tf.similarity(j, j+1);
+                    media += similarity[j-1][j] + similarity[j][j+1];
                 }
                 media /= i;
                 j++;
@@ -55,6 +56,7 @@ public class Avalia {
         for(int j = 1; j < centroidCena.size()-1; j++){
             media += tf.similarityCenas(centroidCena.get(j-1), centroidCena.get(j)) + 
                     tf.similarityCenas(centroidCena.get(j), centroidCena.get(j+1));
+                    //j = j  + 1;
             i = 0;
             mediaC += media;
             media = 0;

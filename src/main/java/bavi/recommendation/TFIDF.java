@@ -36,7 +36,9 @@ public class TFIDF {
     public void setTerms(ArrayList<String> terms) {
         this.terms = terms;
     }
-
+    public double [][] getSimilarityTable(){
+        return this.sim;
+    }
     public void calculateTFIDF() {
         int i;
         for(i = 0; i < this.terms.size(); ++i) {
@@ -47,6 +49,7 @@ public class TFIDF {
                 int fij = this.countFrequency((String)this.terms.get(i), (Video)this.videos.get(j));
                 if (fij > 0) {
                     auxList.add((1.0D + Math.log10((double)fij) / Math.log10(2.0D)) * (Math.log10((double)(this.videos.size() / ni)) / Math.log10(2.0D)));
+                    //auxList.add((Double)(1+ Math.log10(fij)));
                 } else {
                     auxList.add(0.0D);
                 }
@@ -180,6 +183,7 @@ public class TFIDF {
         normA = Math.sqrt(normA);
         normB = Math.sqrt(normB);
         double s = sum / (normA * normB);
+        if(Double.isNaN(s)) return 1;
         return s;
     }
 

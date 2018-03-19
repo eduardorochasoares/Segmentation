@@ -24,19 +24,20 @@ public class Main {
 
         String s;
         try {
-            for(int i = 0; i < 174; ++i) {
+            for(int i = 0; i < 512; ++i) {
                 BufferedReader br = null;
                 FileReader fr = null;
                 ArrayList msg = new ArrayList();
 
                 try {
-                    fr = new FileReader("/home/eduardo/Documentos/sceneSegmentation/VideoInfo Extraction/anotation" + i + ".txt");
+                    fr = new FileReader("/media/eduardo/7AE8C7B0E8C768C9/video_aulas_computacao/sem_slides/1/transcripts/anotation" + i + ".txt");
                     new BufferedReader(fr);
-                br = new BufferedReader(new FileReader("/home/eduardo/Documentos/sceneSegmentation/VideoInfo Extraction/anotation" + i + ".txt"));
+                    br = new BufferedReader(new FileReader("/media/eduardo/7AE8C7B0E8C768C9/video_aulas_computacao/sem_slides/1/transcripts/anotation" + i + ".txt"));
                     Video v = new Video(Integer.toString(i));
 
                     while((s = br.readLine()) != null) {
-                        msg.add(s);
+                        if(!s.isEmpty())
+                            msg.add(s);
                     }
 
                     v.setReferences(msg);
