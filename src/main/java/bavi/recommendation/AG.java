@@ -161,11 +161,18 @@ public class AG {
         ArrayList<Integer> aux;
         for (int k = 0; k < j * population; k++) {
             aux = ag.get(i + rand.nextInt(population - i));
-            for (int x = 0; x < tf.get(0).size(); x++) {
-                aux.set(x, rand.nextInt(2));
+            //for (int x = 0; x < tf.get(0).size(); x++) {
+            int x = rand.nextInt(tf.get(0).size());
+            if(aux.get(x) == 0){
+                aux.set(x, 1);
 
+            }else{
+                aux.set(x, 0);
 
             }
+
+
+            //}
 
         }
     }
@@ -216,7 +223,7 @@ public class AG {
         int k = 0;
         while (k < 500 && iterations_without_improviment < 100) {
             System.out.println("1");
-            int x = (int) (population * 0.2) - 1;
+            int x = (int) (population * 0.3) - 1;
             ag = ordena();
             System.out.println("2");
             double valorSolucao = AvaliaS(ag.get(0));
@@ -229,7 +236,7 @@ public class AG {
             }
             Mutacao(x, 0.1);
             System.out.println("iteração: " + k);
-            CrossOver(x, ((int) ((population - x) * 0.05) + x));
+            CrossOver(x, ((int) ((population - x) * 0.1) + x));
             System.out.println("3");
 
             k++;

@@ -228,6 +228,7 @@ public class TFIDF {
                     this.videos.get(current).getReferences()));
         }*/
         //System.out.println("chama SSD");
+
         //SSD(0,tfidf.get(0).size()-1,0);
         AG ag = new AG(tfidf, this);
         ag.Main();
@@ -287,9 +288,9 @@ public class TFIDF {
         }
         //System.out .println("inicio " + inicio + " fim " + fim);
         //System.out.println("cont " + cont);
-        if(cont > 3){
-            return;
-        }
+        //if(cont > 3){
+          //  return;
+        //}
         //System.out.println("inicio SSD");
         double somaT = desvioQuad(inicio,fim);
         //System.out.println("soma total " + somaT);
